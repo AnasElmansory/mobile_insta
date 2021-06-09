@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "470992764007",
+    "project_id": "insta-news-a08f7",
+    "storage_bucket": "insta-news-a08f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470992764007:android:d6e441c5a9bab037ade8c2",
+        "android_client_info": {
+          "package_name": "com.ok2code.insta_news_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "470992764007-tgude3u8346q71hoq8kaqlkghvq7gqoc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ok2code.insta_news_mobile",
+            "certificate_hash": "eff152408a215ad8017f55a6ff40289275819d09"
+          }
+        },
+        {
+          "client_id": "470992764007-gqf838puqn68v9k528ft9u9d5e4hgsgp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKC68PRkvpI-H6XRteJDvWjUJWQooHVQU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "470992764007-gqf838puqn68v9k528ft9u9d5e4hgsgp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
