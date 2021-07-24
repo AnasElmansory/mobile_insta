@@ -1,16 +1,22 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
 
 import 'entity_url.dart';
 import 'hashtag.dart';
 import 'mention.dart';
+part 'entities.g.dart';
 
-class Entity {
+@HiveType(typeId: 4)
+class Entity extends HiveObject {
+  @HiveField(0)
   final List<Hashtag>? hashtags;
+  @HiveField(1)
   final List<EntityUrl>? urls;
+  @HiveField(2)
   final List<Mention>? mentions;
-  const Entity({
+  Entity({
     this.hashtags,
     this.urls,
     this.mentions,

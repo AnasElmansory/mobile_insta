@@ -1,90 +1,110 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:insta_news_mobile/cubits/auth/auth_cubit.dart';
+import 'package:insta_news_mobile/controllers/auth_controller.dart';
+import 'package:insta_news_mobile/utils/helper.dart';
 import 'package:insta_news_mobile/utils/navigations.dart';
 
-import 'package:provider/provider.dart';
-
-class SignPage extends StatelessWidget {
-  const SignPage({Key? key}) : super(key: key);
+class SignPage extends GetWidget<AuthController> {
+  final bool isFirstTime;
+  const SignPage({Key? key})
+      : isFirstTime = false,
+        super(key: key);
+  const SignPage.firstTime({Key? key})
+      : isFirstTime = true,
+        super(key: key);
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthCubit, AuthState>(
-      listener: (context, state) {
-        state.maybeWhen(
-          authenticated: (provider, user) async => await navigateToHomePage(),
-          orElse: () {},
-        );
-      },
-      child: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            const Center(
-              child: Text('App Logo is Here'),
+    final size = context.mediaQuerySize;
+    return Scaffold(
+      body: Column(
+        children: [
+          SizedBox(height: size.height * .1),
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Image(
+                image: AssetImage('horizontal_logo.png'),
+              ),
             ),
-            ButtonBar(
-              alignment: MainAxisAlignment.center,
-              children: [
-                GFButton(
-                  elevation: 5,
-                  fullWidthButton: true,
-                  color: Colors.white,
-                  position: GFPosition.end,
-                  icon: const Icon(
-                    FontAwesomeIcons.google,
-                    color: Colors.red,
-                  ),
-                  text: 'google_login'.tr,
-                  borderShape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
-                    ),
-                  ),
-                  textColor: Colors.black,
-                  onPressed: () async =>
-                      await context.read<AuthCubit>().signInWithGoogle(),
-                ).marginSymmetric(horizontal: 8),
-                const SizedBox(height: 16),
-                GFButton(
-                  icon: const Icon(
-                    FontAwesomeIcons.facebookF,
-                    color: Colors.white,
-                  ),
-                  borderShape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
-                    ),
-                  ),
-                  position: GFPosition.end,
-                  fullWidthButton: true,
-                  text: 'facebook_login'.tr,
-                  onPressed: () async =>
-                      await context.read<AuthCubit>().signInWithFacebook(),
-                ).marginSymmetric(horizontal: 8),
-                const SizedBox(height: 20),
-                GFButton(
-                  text: 'guset_login'.tr,
-                  type: GFButtonType.transparent,
-                  textColor: Colors.black,
-                  onPressed: () async => await _signAsGuest(),
+          ),
+          SizedBox(height: size.height * .1),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: GFButton(
+              elevation: 5,
+              icon: const Icon(
+                FontAwesomeIcons.facebookF,
+                color: Colors.white,
+              ),
+              borderShape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+              position: GFPosition.end,
+              fullWidthButton: true,
+              text: 'facebook_login'.tr,
+              color: Colors.blue[800]!,
+              onPressed: () async => await controller
+                  .signInWithFacebook()
+                  .whenComplete(() => _onAuthCompleted(isFirstTime)),
+            ).marginSymmetric(horizontal: 8),
+          ),
+          const SizedBox(height: 24),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: GFButton(
+              elevation: 5,
+              fullWidthButton: true,
+              color: Colors.white,
+              position: GFPosition.end,
+              icon: const Icon(
+                FontAwesomeIcons.google,
+                color: Colors.red,
+              ),
+              text: 'google_login'.tr,
+              borderShape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+              ),
+              textColor: Colors.black,
+              onPressed: () async => await controller
+                  .signInWithGoogle()
+                  .whenComplete(() => _onAuthCompleted(isFirstTime)),
+            ).marginSymmetric(horizontal: 8),
+          ),
+          const SizedBox(height: 24),
+          GFButton(
+            text: 'guset_login'.tr,
+            type: GFButtonType.transparent,
+            textColor: Colors.black,
+            onPressed: () async {
+              final result = await _signAsGuest(isFirstTime);
+              if (result) _onAuthCompleted(isFirstTime);
+            },
+          ),
+        ],
       ),
     );
   }
 }
 
-Future<void> _signAsGuest() async {
-  await Get.dialog(
+void _onAuthCompleted(bool isFirstTime) {
+  if (isFirstTime) {
+    navigateToHomePage();
+  } else {
+    Get.back();
+  }
+}
+
+Future<bool> _signAsGuest(bool isFirstTime) async {
+  if (!await makeSureConnected()) return false;
+  final result = await Get.dialog<bool>(
     Dialog(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -106,14 +126,17 @@ Future<void> _signAsGuest() async {
                 color: Colors.white,
                 type: GFButtonType.outline,
                 textColor: Colors.black,
-                onPressed: () => Get.back(),
+                onPressed: () => Get.back(result: false),
               ),
-              const VerticalDivider(),
+              const SizedBox(
+                height: 40,
+                child: VerticalDivider(),
+              ),
               GFButton(
                 text: 'continue'.tr,
                 color: Colors.white,
                 textColor: Colors.blue,
-                onPressed: () async => await navigateToHomePage(),
+                onPressed: () => Get.back(result: true),
               ),
             ],
           ),
@@ -121,4 +144,5 @@ Future<void> _signAsGuest() async {
       ),
     ),
   );
+  return result ?? false;
 }

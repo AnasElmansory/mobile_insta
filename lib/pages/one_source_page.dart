@@ -1,18 +1,27 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:hive/hive.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+
 import 'package:insta_news_mobile/api/news_service.dart';
+import 'package:insta_news_mobile/controllers/news/news_favourite_controller.dart';
 import 'package:insta_news_mobile/d_injection.dart';
-import 'package:insta_news_mobile/utils/extentions.dart';
+import 'package:insta_news_mobile/hooks/search_hook.dart';
 import 'package:insta_news_mobile/models/news.dart';
 import 'package:insta_news_mobile/models/source.dart';
+import 'package:insta_news_mobile/utils/caching.dart';
+import 'package:insta_news_mobile/utils/extentions.dart';
 import 'package:insta_news_mobile/utils/helper.dart';
-import 'package:insta_news_mobile/widgets/news_widget.dart';
+import 'package:insta_news_mobile/widgets/empty_widget.dart';
+import 'package:insta_news_mobile/widgets/news/news_widget.dart';
+import 'package:insta_news_mobile/widgets/search/search_body.dart';
+import 'package:lottie/lottie.dart';
 
-class OneSourcePage extends StatefulWidget {
+class OneSourcePage extends StatefulHookWidget {
   final Source source;
   const OneSourcePage({Key? key, required this.source}) : super(key: key);
 
@@ -21,22 +30,22 @@ class OneSourcePage extends StatefulWidget {
 }
 
 class _OneSourcePageState extends State<OneSourcePage> {
-  Source get source => widget.source;
-  final newsService = getIt<NewsService>();
-  Box? _cacheBox;
   late PagingController<int, News> _pagingController;
+  final newsService = getIt<NewsService>();
+  Source get source => widget.source;
+  Box? _cacheBox;
   @override
   void initState() {
-    super.initState();
     _pagingController = PagingController<int, News>(firstPageKey: 1);
     _pagingController.addPageRequestListener((pageKey) async {
       if (!await isConnected()) {
-        _cacheBox = await Hive.openBox('sourcesNews');
-        final cacheList = _cacheBox!.get(source.id, defaultValue: const [])!;
-        _pagingController.appendLastPage(cacheList);
+        final cachedItems = await getNamedCachedItems<News>(source.id);
+        _pagingController.appendLastPage(cachedItems);
       }
 
-      final _items = await newsService.getNewsBySource(widget.source, pageKey);
+      final _items =
+          await newsService.getNewsBySource(widget.source.id, pageKey);
+      setNamedCachedItems<News>(source.id, _items);
       if (_items.length < 10) {
         _pagingController.appendLastPage([..._items.toSet()]);
       } else {
@@ -44,6 +53,8 @@ class _OneSourcePageState extends State<OneSourcePage> {
         _pagingController.appendPage([..._items.toSet()], nextPageKey);
       }
     });
+    Get.find<NewsFavouriteController>().getUserFavouriteNews();
+    super.initState();
   }
 
   @override
@@ -58,40 +69,64 @@ class _OneSourcePageState extends State<OneSourcePage> {
 
   @override
   Widget build(BuildContext context) {
+    final service = getIt<NewsService>();
+    final searchModel = useSearchHook<News>(
+      hintText: 'search for news',
+      service: service,
+    );
+    final isSearching = searchModel.searchBar.isSearching.value;
     return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        children: [
-          GFListTile(
+      appBar: searchModel.searchBar.build(context),
+      body: isSearching
+          ? SearchBody<News>(notifier: searchModel.items)
+          : SourceNewsList(
+              source: source,
+              pagingController: _pagingController,
+            ),
+    );
+  }
+}
+
+class SourceNewsList extends StatelessWidget {
+  final Source source;
+  final PagingController<int, News> pagingController;
+  const SourceNewsList({
+    Key? key,
+    required this.source,
+    required this.pagingController,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: GFListTile(
             titleText: source.name,
             subTitle: Text(
               '@' + source.username,
               style: const TextStyle(color: Colors.blue),
             ),
-            description: AutoSizeText(
-              source.description ?? '',
-              overflow: TextOverflow.ellipsis,
-              maxLines: 3,
-            ),
+            description: AutoSizeText(source.description ?? ''),
             avatar: GFAvatar(
               backgroundImage: CachedNetworkImageProvider(
                 source.profileImageMedium,
               ),
             ),
           ),
-          Expanded(
-            child: PagedListView.separated(
-              pagingController: _pagingController,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              builderDelegate: PagedChildBuilderDelegate<News>(
-                itemBuilder: (context, news, index) {
-                  return NewsWidget(news: news);
-                },
-              ),
-            ),
+        ),
+        PagedSliverList.separated(
+          pagingController: pagingController,
+          separatorBuilder: (_, __) => const SizedBox(height: 8),
+          builderDelegate: PagedChildBuilderDelegate<News>(
+            noItemsFoundIndicatorBuilder: (_) => const EmptyWidget(),
+            firstPageProgressIndicatorBuilder: (_) =>
+                Lottie.asset('assets/newspaper_spinner.json'),
+            itemBuilder: (context, news, index) =>
+                NewsWidgets.fromRegular(news: news),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

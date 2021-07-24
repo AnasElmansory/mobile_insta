@@ -1,8 +1,9 @@
 import 'dart:convert';
 
+import 'package:insta_news_mobile/models/model.dart';
 import 'package:uuid/uuid.dart';
 
-class User {
+class User extends Model {
   final String id;
   final String email;
   final String provider;

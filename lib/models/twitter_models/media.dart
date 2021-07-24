@@ -1,16 +1,28 @@
 import 'dart:convert';
 
+import 'package:hive/hive.dart';
+
 import 'public_metric.dart';
 import '../../utils/extentions.dart';
+part 'media.g.dart';
 
-class Media {
+@HiveType(typeId: 9)
+class Media extends HiveObject {
+  @HiveField(0)
   final PublicMetrics? publicMetric;
+  @HiveField(1)
   final int? height;
+  @HiveField(2)
   final int? width;
+  @HiveField(3)
   final String? url;
+  @HiveField(4)
   final String? mediaKey;
+  @HiveField(5)
   final MediaType? type;
+  @HiveField(6)
   final String? previewImageUrl;
+  @HiveField(7)
   final Duration? durationMs;
   Media({
     this.publicMetric,
@@ -113,12 +125,20 @@ class Media {
   }
 }
 
+@HiveType(typeId: 13)
 enum MediaType {
+  @HiveField(0)
   video,
+  @HiveField(1)
   photo,
+  @HiveField(2)
+  gif,
 }
+
 MediaType? typeFromString(String type) {
   if (type == 'video') {
     return MediaType.video;
-  } else if (type == 'photo') return MediaType.photo;
+  } else if (type == 'photo') {
+    return MediaType.photo;
+  } else if (type == 'animated_gif') return MediaType.gif;
 }

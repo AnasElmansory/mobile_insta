@@ -2,52 +2,60 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
+
+import 'model.dart';
 part 'country.g.dart';
 
 @HiveType(typeId: 2)
-class Country extends HiveObject {
+class Country extends HiveObject implements Model {
   @HiveField(0)
   final String countryName;
   @HiveField(1)
-  final String? countryCode;
+  final String countryNameAr;
   @HiveField(2)
-  final List<String> countryAliases;
+  final String? countryCode;
+  @HiveField(3)
+  final List<String> sources;
   Country({
     required this.countryName,
-    required this.countryAliases,
+    required this.countryNameAr,
+    required this.sources,
     this.countryCode,
   });
 
   Country copyWith({
     String? countryName,
+    String? countryNameAr,
     String? countryCode,
-    List<String>? countryAliases,
+    List<String>? sources,
   }) {
     return Country(
       countryName: countryName ?? this.countryName,
+      countryNameAr: countryNameAr ?? this.countryNameAr,
       countryCode: countryCode ?? this.countryCode,
-      countryAliases: countryAliases ?? this.countryAliases,
+      sources: sources ?? this.sources,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'countryName': countryName,
+      'countryNameAr': countryNameAr,
       'countryCode': countryCode,
-      'countryAliases': countryAliases,
+      'sources': sources,
     };
   }
 
   factory Country.fromMap(Map<String, dynamic> map) {
-    final countryName = map['countryName'] as String;
-    final aliases = map['countryAliases'] == null
-        ? [countryName]
-        : List<String>.from(map['countryAliases']);
-    if (!aliases.contains(countryName)) aliases.add(countryName);
+    final aliases = map['sources'] == null
+        ? const <String>[]
+        : List<String>.from(map['sources']);
+
     return Country(
       countryName: map['countryName'],
+      countryNameAr: map['countryNameAr'],
       countryCode: map['countryCode'],
-      countryAliases: aliases,
+      sources: aliases,
     );
   }
 
@@ -58,7 +66,7 @@ class Country extends HiveObject {
 
   @override
   String toString() =>
-      'Country(countryName: $countryName, countryCode: $countryCode, countryAliases: $countryAliases)';
+      'Country(countryName: $countryName, countryCode: $countryCode, sources: $sources)';
 
   @override
   bool operator ==(Object other) {
@@ -67,10 +75,10 @@ class Country extends HiveObject {
     return other is Country &&
         other.countryName == countryName &&
         other.countryCode == countryCode &&
-        listEquals(other.countryAliases, countryAliases);
+        listEquals(other.sources, sources);
   }
 
   @override
   int get hashCode =>
-      countryName.hashCode ^ countryCode.hashCode ^ countryAliases.hashCode;
+      countryName.hashCode ^ countryCode.hashCode ^ sources.hashCode;
 }

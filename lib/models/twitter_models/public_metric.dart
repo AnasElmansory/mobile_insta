@@ -1,13 +1,22 @@
 import 'dart:convert';
 
-class PublicMetrics {
+import 'package:hive/hive.dart';
+part 'public_metric.g.dart';
+
+@HiveType(typeId: 10)
+class PublicMetrics extends HiveObject {
+  @HiveField(0)
   final int? retweetCount;
+  @HiveField(1)
   final int? replyCount;
+  @HiveField(2)
   final int? likeCount;
+  @HiveField(3)
   final int? quoteCount;
+  @HiveField(4)
   final int? viewCount;
 
-  const PublicMetrics({
+  PublicMetrics({
     this.retweetCount,
     this.replyCount,
     this.likeCount,

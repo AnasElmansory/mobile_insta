@@ -5,12 +5,15 @@ import 'package:insta_news_mobile/auth/admin_verification.dart';
 import 'package:insta_news_mobile/auth/i_auth.dart';
 import 'package:insta_news_mobile/models/user.dart';
 
+import 'guest_auth.dart';
+
 class FaceAuth extends IAuth {
-  final _facebookAuth = FacebookAuth.instance;
-  final _adminVerification = AdminVerification();
+  final FacebookAuth _facebookAuth;
+  final AdminVerification _adminVerification;
+  const FaceAuth(this._facebookAuth, this._adminVerification);
   @override
-  Future<User?> getCurrentUser() async {
-    if (!await isLoggedIn()) return null;
+  Future<User> getCurrentUser() async {
+    if (!await isLoggedIn()) return User.guest();
     final facebookUser = await _facebookAuth.getUserData();
     final user = User(
       id: facebookUser['id'],
@@ -37,17 +40,18 @@ class FaceAuth extends IAuth {
   }
 
   @override
-  Future<User?> signIn() async {
+  Future<User> signIn() async {
     final result = await _facebookAuth.login();
     if (result.status == LoginStatus.cancelled ||
         result.status == LoginStatus.failed) {
       await Fluttertoast.showToast(msg: result.message!);
-      return null;
+      return User.guest();
     }
     final facebookUser = await _facebookAuth.getUserData();
+    final userId = await guestUserId();
 
     final user = User(
-      id: facebookUser['id'],
+      id: userId ?? facebookUser['id'],
       name: facebookUser['name'],
       email: facebookUser['email'],
       avatar: facebookUser['picture']["data"]['url'],

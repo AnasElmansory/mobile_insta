@@ -18,21 +18,24 @@ class CountryAdapter extends TypeAdapter<Country> {
     };
     return Country(
       countryName: fields[0] as String,
-      countryAliases: (fields[2] as List).cast<String>(),
-      countryCode: fields[1] as String?,
+      countryNameAr: fields[1] as String,
+      sources: (fields[3] as List).cast<String>(),
+      countryCode: fields[2] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Country obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.countryName)
       ..writeByte(1)
-      ..write(obj.countryCode)
+      ..write(obj.countryNameAr)
       ..writeByte(2)
-      ..write(obj.countryAliases);
+      ..write(obj.countryCode)
+      ..writeByte(3)
+      ..write(obj.sources);
   }
 
   @override

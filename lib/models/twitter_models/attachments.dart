@@ -1,11 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
+part 'attachments.g.dart';
 
-class Attachments {
+@HiveType(typeId: 8)
+class Attachments extends HiveObject {
+  @HiveField(0)
   final List<String>? mediaKeys;
-
-  const Attachments({this.mediaKeys});
+  Attachments({this.mediaKeys});
 
   Attachments copyWith({
     List<String>? mediaKeys,

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 class DividerWidget extends StatelessWidget {
   final String dividerName;
-
+  final TextStyle style;
   const DividerWidget({
     Key? key,
     required this.dividerName,
+    this.style = const TextStyle(fontSize: 16),
   }) : super(key: key);
 
   @override
@@ -18,6 +19,7 @@ class DividerWidget extends StatelessWidget {
         ),
         Text(
           "    " + dividerName + "    ",
+          style: style,
         ),
         const Expanded(
           flex: 4,

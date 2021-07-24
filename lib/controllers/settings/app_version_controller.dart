@@ -11,7 +11,7 @@ class VersionController extends GetxController {
 
   @override
   void onInit() async {
-    super.onInit();
     await getApplicationVersion();
+    super.onInit();
   }
 }

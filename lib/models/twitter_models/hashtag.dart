@@ -1,10 +1,17 @@
 import 'dart:convert';
 
-class Hashtag {
+import 'package:hive/hive.dart';
+part 'hashtag.g.dart';
+
+@HiveType(typeId: 5)
+class Hashtag extends HiveObject {
+  @HiveField(0)
   final int? start;
+  @HiveField(1)
   final int? end;
+  @HiveField(2)
   final String? tag;
-  const Hashtag({
+  Hashtag({
     this.start,
     this.end,
     this.tag,

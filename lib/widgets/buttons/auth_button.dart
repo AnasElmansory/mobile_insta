@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:insta_news_mobile/cubits/auth/auth_cubit.dart';
+import 'package:insta_news_mobile/controllers/auth_controller.dart';
+import 'package:insta_news_mobile/utils/helper.dart';
 import 'package:insta_news_mobile/utils/navigations.dart';
 
 class AuthButton extends StatelessWidget {
@@ -33,17 +33,22 @@ class AuthButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authCubit = context.read<AuthCubit>();
+    final controller = Get.find<AuthController>();
+
     return GFButton(
       text: text,
       icon: icon,
       textColor: Colors.black,
       type: GFButtonType.transparent,
       onPressed: () async {
-        if (userSignOut) {
-          await authCubit.signOut();
+        if (await makeSureConnected()) {
+          if (userSignOut) {
+            await controller.signOut();
+          } else {
+            await navigateToSignPageUntil();
+          }
         } else {
-          await navigateToSignPage();
+          return;
         }
       },
     );

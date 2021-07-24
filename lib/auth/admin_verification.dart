@@ -1,10 +1,10 @@
 import 'package:insta_news_mobile/api/admin_service.dart';
 import 'package:insta_news_mobile/models/user.dart';
 
-import '../d_injection.dart';
-
 class AdminVerification {
-  final _adminService = getIt<AdminService>();
+  final AdminService _adminService;
+  // final _adminService = getIt<AdminService>();
+  const AdminVerification(this._adminService);
   Future<bool> verifyAdmin(User user) async {
     final isAdmin = await _adminService.checkAdminPermission(user.id);
     return isAdmin;

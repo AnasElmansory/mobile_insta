@@ -1,13 +1,22 @@
 import 'dart:convert';
 
-class EntityUrl {
+import 'package:hive/hive.dart';
+part 'entity_url.g.dart';
+
+@HiveType(typeId: 6)
+class EntityUrl extends HiveObject {
+  @HiveField(0)
   final int? start;
+  @HiveField(1)
   final int? end;
+  @HiveField(2)
   final String? url;
+  @HiveField(3)
   final String? displayUrl;
+  @HiveField(4)
   final String? expandedUrl;
 
-  const EntityUrl({
+  EntityUrl({
     this.start,
     this.end,
     this.url,

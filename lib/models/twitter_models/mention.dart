@@ -1,8 +1,15 @@
 import 'dart:convert';
 
-class Mention {
+import 'package:hive/hive.dart';
+part 'mention.g.dart';
+
+@HiveType(typeId: 7)
+class Mention extends HiveObject {
+  @HiveField(0)
   final int? start;
+  @HiveField(1)
   final int? end;
+  @HiveField(2)
   final String? username;
   Mention({
     this.start,

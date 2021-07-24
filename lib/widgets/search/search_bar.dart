@@ -36,7 +36,7 @@ class _SearchBarState<T> extends State<SearchBar<T>> {
   Widget build(BuildContext context) {
     return FloatingSearchBar(
       onSubmitted: (query) async {
-        final result = await widget.apiService.searchItems(query);
+        final result = await widget.apiService.searchItems(query: query);
         _itemNotifier.value = result;
       },
       hint: widget.hint.tr,

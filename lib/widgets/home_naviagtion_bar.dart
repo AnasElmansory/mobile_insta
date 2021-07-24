@@ -14,35 +14,23 @@ class HomeNavigationBar extends StatelessWidget {
         items: [
           BottomNavigationBarItem(
             label: 'home'.tr,
-            icon: const Icon(
-              Icons.home,
-              color: Colors.blue,
-            ),
+            icon: const Icon(Icons.home),
           ),
           BottomNavigationBarItem(
             label: 'favourite'.tr,
-            icon: const Icon(
-              Icons.bookmark,
-              color: Colors.blue,
-            ),
+            icon: const Icon(Icons.bookmark),
           ),
           BottomNavigationBarItem(
             label: 'sources'.tr,
-            icon: const Icon(
-              Icons.rss_feed,
-              color: Colors.blue,
-            ),
+            icon: const Icon(Icons.rss_feed),
           ),
           BottomNavigationBarItem(
             label: 'menu'.tr,
-            icon: const Icon(
-              Icons.more_horiz,
-              color: Colors.blue,
-            ),
+            icon: const Icon(Icons.more_horiz),
           ),
         ],
         fixedColor: Colors.blue,
-        type: BottomNavigationBarType.shifting,
+        type: BottomNavigationBarType.fixed,
       );
     });
   }

@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:hive/hive.dart';
+
+import 'model.dart';
 part 'source.g.dart';
 
 @HiveType(typeId: 1)
-class Source extends HiveObject {
+class Source extends HiveObject implements Model {
   @HiveField(0)
   final String id;
   @HiveField(1)
@@ -74,16 +76,18 @@ class Source extends HiveObject {
   }
 
   factory Source.fromMap(Map<String, dynamic> map) {
+    final sourceId = map['id'];
+    final avatar = map['profile_image_url'] as String?;
     final createdAt =
         map['created_at'] != null ? DateTime.parse(map['created_at']) : null;
     return Source(
-      id: map['id'],
+      id: sourceId,
       url: map['url'],
       username: map['username'],
       name: map['name'],
       location: map['location'],
       description: map['description'],
-      profileImageUrl: map['profile_image_url'],
+      profileImageUrl: avatar,
       verified: map['verified'],
       createdAt: createdAt,
     );

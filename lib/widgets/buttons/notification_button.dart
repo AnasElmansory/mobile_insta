@@ -1,42 +1,39 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/getwidget.dart';
 
-class FollowButton extends StatelessWidget {
+class NotificationButton extends StatelessWidget {
   final void Function() onPressed;
   final String text;
   final Color color;
 
-  const FollowButton.follow({
+  const NotificationButton.enable({
     Key? key,
-    this.text = 'follow',
-    this.color = Colors.green,
+    this.text = 'enable_notification',
+    this.color = Colors.blue,
     required this.onPressed,
   }) : super(key: key);
 
-  const FollowButton.unfollow({
+  const NotificationButton.mute({
     Key? key,
-    this.text = 'unfollow',
+    this.text = 'mute_notification',
     this.color = Colors.red,
     required this.onPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GFButton(
+    return TextButton(
       child: AutoSizeText(
         text.tr,
-        minFontSize: 10,
+        minFontSize: 12,
+        maxFontSize: Get.locale!.languageCode == 'es' ? 12 : 14,
         maxLines: 1,
-      ),
-      onPressed: onPressed,
-      borderShape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(20),
+        style: TextStyle(
+          color: color,
         ),
       ),
-      color: color,
+      onPressed: onPressed,
     );
   }
 }

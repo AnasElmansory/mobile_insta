@@ -8,8 +8,15 @@ const guestLoginAlertAr =
 const guestLoginAlertEs =
     "Continuar como invitado hará que extrañe sus fuentes de noticias en caso de utilizar la aplicación desde otro teléfono.";
 
-const adminUser = 'owner';
-const normalUser = 'none';
-// ignore: prefer_adjacent_string_concatenation
+const emptyWidgetTextEn =
+    "This is the best place to see the latest news from favorite sources, So let's find some sources to follow.";
+const emptyWidgetTextAr =
+    "هذا هو أفضل مكان لمشاهدة آخر الأخبار من المصادر المفضلة ، لذلك دعونا نجد بعض المصادر للمتابعة.";
+const emptyWidgetTextEs =
+    "Este es el mejor lugar para ver las últimas noticias de las fuentes favoritas, así que busquemos algunas fuentes para seguir.";
+
+const permissions = ['user', 'editor', 'owner'];
 const twitterRegex =
     r"([#@]([a-zA-Z0-9\_]|[\u0600-\u06FF\_])+)|((https|http):\/\/+[a-zA-Z0-9.]+\/+\w+)";
+const twitterUrlRegex = r"((https|http):\/\/+[a-zA-Z0-9.]+\/+\w+)";
+const kSnackBarDuration = Duration(seconds: 3);
