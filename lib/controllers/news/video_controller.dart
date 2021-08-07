@@ -32,7 +32,6 @@ class VideoController extends GetxController {
   void onClose() {
     _videoPlayerController.dispose();
     _chewieController.dispose();
-    print('controller closed');
     super.onClose();
   }
 }

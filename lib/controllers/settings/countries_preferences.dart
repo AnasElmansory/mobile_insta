@@ -10,7 +10,7 @@ class CountriesController extends GetxController {
 
   bool selected(Country country) {
     for (final source in country.sources) {
-      if (followController.follows.contains(source)) return true;
+      if (followController.follows.contains(source.id)) return true;
     }
     return false;
   }

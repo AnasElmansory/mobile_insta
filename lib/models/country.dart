@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 
+import 'country_source.dart';
 import 'model.dart';
+
 part 'country.g.dart';
 
-@HiveType(typeId: 2)
+@HiveType(typeId: 21)
 class Country extends HiveObject implements Model {
   @HiveField(0)
   final String countryName;
@@ -15,19 +17,19 @@ class Country extends HiveObject implements Model {
   @HiveField(2)
   final String? countryCode;
   @HiveField(3)
-  final List<String> sources;
+  final List<CountrySource> sources;
   Country({
     required this.countryName,
     required this.countryNameAr,
-    required this.sources,
     this.countryCode,
+    required this.sources,
   });
 
   Country copyWith({
     String? countryName,
     String? countryNameAr,
     String? countryCode,
-    List<String>? sources,
+    List<CountrySource>? sources,
   }) {
     return Country(
       countryName: countryName ?? this.countryName,
@@ -42,20 +44,17 @@ class Country extends HiveObject implements Model {
       'countryName': countryName,
       'countryNameAr': countryNameAr,
       'countryCode': countryCode,
-      'sources': sources,
+      'sources': sources.map((x) => x.toMap()).toList(),
     };
   }
 
   factory Country.fromMap(Map<String, dynamic> map) {
-    final aliases = map['sources'] == null
-        ? const <String>[]
-        : List<String>.from(map['sources']);
-
     return Country(
       countryName: map['countryName'],
       countryNameAr: map['countryNameAr'],
       countryCode: map['countryCode'],
-      sources: aliases,
+      sources: List<CountrySource>.from(
+          map['sources']?.map((x) => CountrySource.fromMap(x))),
     );
   }
 
@@ -65,8 +64,9 @@ class Country extends HiveObject implements Model {
       Country.fromMap(json.decode(source));
 
   @override
-  String toString() =>
-      'Country(countryName: $countryName, countryCode: $countryCode, sources: $sources)';
+  String toString() {
+    return 'Country(countryName: $countryName, countryNameAr: $countryNameAr, countryCode: $countryCode, sources: $sources)';
+  }
 
   @override
   bool operator ==(Object other) {
@@ -74,11 +74,16 @@ class Country extends HiveObject implements Model {
 
     return other is Country &&
         other.countryName == countryName &&
+        other.countryNameAr == countryNameAr &&
         other.countryCode == countryCode &&
         listEquals(other.sources, sources);
   }
 
   @override
-  int get hashCode =>
-      countryName.hashCode ^ countryCode.hashCode ^ sources.hashCode;
+  int get hashCode {
+    return countryName.hashCode ^
+        countryNameAr.hashCode ^
+        countryCode.hashCode ^
+        sources.hashCode;
+  }
 }

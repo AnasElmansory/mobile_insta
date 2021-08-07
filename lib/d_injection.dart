@@ -8,6 +8,7 @@ import 'package:insta_news_mobile/api/user_prefernces_service.dart';
 import 'package:insta_news_mobile/auth/admin_verification.dart';
 import 'package:insta_news_mobile/auth/guest_auth.dart';
 import 'package:insta_news_mobile/models/country.dart';
+import 'package:insta_news_mobile/models/country_source.dart';
 import 'package:insta_news_mobile/models/source.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -71,6 +72,7 @@ void initGet() {
 Future<void> initHive() async {
   final dir = await getTemporaryDirectory();
   Hive.init(dir.path);
+  Hive.registerAdapter(CountrySourceAdapter());
   Hive.registerAdapter(SourceAdapter());
   Hive.registerAdapter(CountryAdapter());
   Hive.registerAdapter(AttachmentsAdapter());

@@ -96,6 +96,7 @@ class ProfilePage extends GetWidget<AuthController> {
               const Divider(indent: 50, endIndent: 10, height: 0),
               GFListTile(
                 titleText: 'terms_conditions'.tr,
+                onTap: navigateToTermsPage,
                 padding: const EdgeInsets.all(12.0),
                 margin: const EdgeInsets.all(0),
                 avatar: const Icon(
@@ -106,6 +107,7 @@ class ProfilePage extends GetWidget<AuthController> {
               const Divider(indent: 50, endIndent: 10, height: 0),
               GFListTile(
                 titleText: 'privacy_policy'.tr,
+                onTap: navigateToPrivacyPage,
                 padding: const EdgeInsets.all(12.0),
                 margin: const EdgeInsets.all(0),
                 avatar: const Icon(

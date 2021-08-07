@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:flutter/material.dart';
@@ -27,12 +28,15 @@ class SourceWidget extends StatelessWidget {
       height: size.height * .22,
       child: Card(
         elevation: 5,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        margin: const EdgeInsets.all(8),
         child: InkWell(
           onTap: () async => await navigateToOneSourcePage(source),
           child: Row(
             children: [
               Expanded(
-                flex: 1,
+                flex: 2,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -48,13 +52,14 @@ class SourceWidget extends StatelessWidget {
                           Image.asset('user_placeholder.png'),
                     ),
                     const SizedBox(height: 8),
-                    Text(
+                    AutoSizeText(
                       source.name,
                       textDirection: source.name.adaptiveTextDirection,
                       textAlign: source.name.adaptiveTextAlign,
                     ),
-                    Text(
+                    AutoSizeText(
                       '@' + source.username,
+                      maxLines: 1,
                       textDirection: source.username.adaptiveTextDirection,
                       textAlign: source.username.adaptiveTextAlign,
                       style: const TextStyle(color: Colors.blue),
@@ -69,7 +74,7 @@ class SourceWidget extends StatelessWidget {
                 ),
               ),
               Expanded(
-                flex: 3,
+                flex: 4,
                 child: Column(
                   children: [
                     Expanded(

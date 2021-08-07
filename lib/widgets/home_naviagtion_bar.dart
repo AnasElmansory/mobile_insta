@@ -17,7 +17,7 @@ class HomeNavigationBar extends StatelessWidget {
             icon: const Icon(Icons.home),
           ),
           BottomNavigationBarItem(
-            label: 'favourite'.tr,
+            label: 'favorite'.tr,
             icon: const Icon(Icons.bookmark),
           ),
           BottomNavigationBarItem(

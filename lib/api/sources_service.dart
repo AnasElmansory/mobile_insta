@@ -13,7 +13,6 @@ class SourcesService extends IApiService<Source> {
   final Dio _dio;
 
   const SourcesService(this._dio);
-// /sources/search/by/country/:country
   @override
   Future<List<Source>> getItems({int? page = 1, int pageSize = 10}) async {
     final followController = Get.find<SourceFollowController>();
@@ -89,6 +88,31 @@ class SourcesService extends IApiService<Source> {
           .toList();
       return sources;
     } on DioError catch (_) {
+      return const <Source>[];
+    }
+  }
+
+  Future<List<Source>> searchCountrySources({
+    required String country,
+    required String query,
+    int page = 1,
+    int pageSize = 10,
+  }) async {
+    final guestBox = Hive.box('guest');
+    final userId = guestBox.get('userId');
+    try {
+      final result = await _dio.get(
+        baseUrl + '/sources/search/by/country/$country',
+        queryParameters: {'query': query, 'page': page},
+        options: Options(headers: await constructHeaders(userId: userId)),
+      );
+
+      final sources = (result.data as List)
+          .map<Source>((source) => Source.fromMap(source))
+          .toList();
+      return sources;
+    } on DioError catch (_) {
+      print(_);
       return const <Source>[];
     }
   }

@@ -20,7 +20,10 @@ class WebViewPage extends StatelessWidget {
           ),
         ),
       ),
-      body: WebView(initialUrl: url),
+      body: WebView(
+        initialUrl: url,
+        javascriptMode: JavascriptMode.unrestricted,
+      ),
     );
   }
 }

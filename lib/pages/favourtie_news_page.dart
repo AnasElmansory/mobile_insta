@@ -16,7 +16,7 @@ class FavouriteNewsPage extends HookWidget {
   Widget build(BuildContext context) {
     final favouriteService = getIt<FavouriteService>();
     final searchModel = useSearchHook<FavoriteNews>(
-      hintText: 'search_for_favorite_news'.tr,
+      hintText: 'search_favorite_news_hint'.tr,
       service: favouriteService,
     );
     final searching = useValueListenable(searchModel.searchBar.isSearching);

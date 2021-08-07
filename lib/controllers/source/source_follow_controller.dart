@@ -13,18 +13,26 @@ class SourceFollowController extends GetxController {
   Future<void> getFollowedSources({
     List<String> sources = const <String>[],
   }) async {
-    _box = await Hive.openBox('followedSources');
     if (!await isConnected()) {
       _follows.addAll(_box.get('follows', defaultValue: const <String>[]));
       _follows.value = [..._follows.toSet()]..shuffle();
     } else {
-      for (final source in sources) {
-        if (!_follows.contains(source)) {
-          _follows.add(source);
+      if (sources.isNotEmpty) {
+        for (final source in sources) {
+          if (!_follows.contains(source)) {
+            _follows.add(source);
+          }
         }
       }
       await _box.put('follows', _follows);
     }
+  }
+
+  Future<void> getCachedFollowSources() async {
+    _box = await Hive.openBox('followedSources');
+    final cachedItems = _box.get('follows', defaultValue: const <String>[]);
+    _follows.addAll(cachedItems);
+    _follows.value = [..._follows.toSet()]..shuffle();
   }
 
   Future<void> manageFollowSource(String sourceId) async {
@@ -45,7 +53,7 @@ class SourceFollowController extends GetxController {
 
   @override
   void onInit() async {
-    await getFollowedSources();
+    await getCachedFollowSources();
     super.onInit();
   }
 

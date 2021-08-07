@@ -21,8 +21,7 @@ class UserPreferencesService {
       } else {
         return false;
       }
-    } on Exception catch (e) {
-      print(e);
+    } on Exception catch (_) {
       return false;
     }
   }
@@ -41,8 +40,7 @@ class UserPreferencesService {
       } else {
         return false;
       }
-    } on Exception catch (e) {
-      print(e);
+    } on Exception catch (_) {
       return false;
     }
   }

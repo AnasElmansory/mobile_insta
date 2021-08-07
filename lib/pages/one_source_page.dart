@@ -6,9 +6,12 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:hive/hive.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:lottie/lottie.dart';
 
 import 'package:insta_news_mobile/api/news_service.dart';
 import 'package:insta_news_mobile/controllers/news/news_favourite_controller.dart';
+import 'package:insta_news_mobile/controllers/settings/settings_controller.dart';
+import 'package:insta_news_mobile/controllers/source/source_follow_controller.dart';
 import 'package:insta_news_mobile/d_injection.dart';
 import 'package:insta_news_mobile/hooks/search_hook.dart';
 import 'package:insta_news_mobile/models/news.dart';
@@ -19,7 +22,6 @@ import 'package:insta_news_mobile/utils/helper.dart';
 import 'package:insta_news_mobile/widgets/empty_widget.dart';
 import 'package:insta_news_mobile/widgets/news/news_widget.dart';
 import 'package:insta_news_mobile/widgets/search/search_body.dart';
-import 'package:lottie/lottie.dart';
 
 class OneSourcePage extends StatefulHookWidget {
   final Source source;
@@ -71,7 +73,7 @@ class _OneSourcePageState extends State<OneSourcePage> {
   Widget build(BuildContext context) {
     final service = getIt<NewsService>();
     final searchModel = useSearchHook<News>(
-      hintText: 'search for news',
+      hintText: 'Search News',
       service: service,
     );
     final isSearching = searchModel.searchBar.isSearching.value;
@@ -98,33 +100,144 @@ class SourceNewsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: GFListTile(
-            titleText: source.name,
-            subTitle: Text(
-              '@' + source.username,
-              style: const TextStyle(color: Colors.blue),
-            ),
-            description: AutoSizeText(source.description ?? ''),
-            avatar: GFAvatar(
-              backgroundImage: CachedNetworkImageProvider(
-                source.profileImageMedium,
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Positioned.fill(
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: GFListTile(
+                  titleText: source.name,
+                  subTitle: Text(
+                    '@' + source.username,
+                    style: const TextStyle(color: Colors.blue),
+                  ),
+                  description: AutoSizeText(source.description ?? ''),
+                  avatar: GFAvatar(
+                    backgroundImage: CachedNetworkImageProvider(
+                      source.profileImageMedium,
+                    ),
+                  ),
+                ),
               ),
-            ),
+              PagedSliverList.separated(
+                pagingController: pagingController,
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                builderDelegate: PagedChildBuilderDelegate<News>(
+                  noItemsFoundIndicatorBuilder: (_) => const EmptyWidget(),
+                  firstPageProgressIndicatorBuilder: (_) =>
+                      Lottie.asset('assets/newspaper_spinner.json'),
+                  itemBuilder: (context, news, index) {
+                    if (pagingController.itemList?.last != news) {
+                      return NewsWidgets.fromRegular(news: news);
+                    } else {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          NewsWidgets.fromRegular(news: news),
+                          const SizedBox(height: 58),
+                        ],
+                      );
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
         ),
-        PagedSliverList.separated(
-          pagingController: pagingController,
-          separatorBuilder: (_, __) => const SizedBox(height: 8),
-          builderDelegate: PagedChildBuilderDelegate<News>(
-            noItemsFoundIndicatorBuilder: (_) => const EmptyWidget(),
-            firstPageProgressIndicatorBuilder: (_) =>
-                Lottie.asset('assets/newspaper_spinner.json'),
-            itemBuilder: (context, news, index) =>
-                NewsWidgets.fromRegular(news: news),
-          ),
+        Positioned(
+          bottom: 8,
+          height: 50,
+          width: context.mediaQuerySize.width,
+          child: SourceActionButtons(sourceId: source.id),
+        ),
+      ],
+    );
+  }
+}
+
+class SourceActionButtons extends StatelessWidget {
+  final String sourceId;
+  const SourceActionButtons({Key? key, required this.sourceId})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final notificationController = Get.find<SettingsController>();
+    final sourceFollow = Get.find<SourceFollowController>();
+    return ButtonBar(
+      buttonPadding: const EdgeInsets.all(8),
+      alignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Obx(
+          () {
+            if (notificationController.isNotificationEnabled(sourceId)) {
+              return GFButton(
+                text: 'mute_notification'.tr,
+                borderShape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                color: Colors.red,
+                onPressed: () async {
+                  if (await makeSureConnected()) {
+                    await notificationController.unsubscribeFromTopic(sourceId);
+                  } else {
+                    return;
+                  }
+                },
+              );
+            } else {
+              return GFButton(
+                text: 'enable_notification'.tr,
+                borderShape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                color: Colors.blue,
+                onPressed: () async {
+                  if (await makeSureConnected()) {
+                    await notificationController.subscribeToTopic(sourceId);
+                  } else {
+                    return;
+                  }
+                },
+              );
+            }
+          },
+        ),
+        Obx(
+          () {
+            if (!sourceFollow.isFollowing(sourceId)) {
+              return GFButton(
+                text: 'follow'.tr,
+                borderShape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                color: Colors.blue,
+                onPressed: () async {
+                  if (await makeSureConnected()) {
+                    await sourceFollow.manageFollowSource(sourceId);
+                  } else {
+                    return;
+                  }
+                },
+              );
+            } else {
+              return GFButton(
+                  text: 'unfollow'.tr,
+                  borderShape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                  color: Colors.red,
+                  onPressed: () async {
+                    if (await makeSureConnected()) {
+                      await sourceFollow.manageFollowSource(sourceId);
+                    } else {
+                      return;
+                    }
+                  });
+            }
+          },
         ),
       ],
     );

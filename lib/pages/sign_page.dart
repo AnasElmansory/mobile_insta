@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:insta_news_mobile/controllers/auth_controller.dart';
+import 'package:insta_news_mobile/controllers/settings/settings_controller.dart';
 import 'package:insta_news_mobile/utils/helper.dart';
 import 'package:insta_news_mobile/utils/navigations.dart';
 
@@ -21,11 +22,15 @@ class SignPage extends GetWidget<AuthController> {
       body: Column(
         children: [
           SizedBox(height: size.height * .1),
-          const Center(
-            child: Padding(
-              padding: EdgeInsets.all(8.0),
+          const LanguageTextButton(),
+          SizedBox(
+            height: size.height * .2,
+            width: size.width * .8,
+            child: Center(
               child: Image(
-                image: AssetImage('horizontal_logo.png'),
+                fit: BoxFit.cover,
+                width: size.width * .8,
+                image: const AssetImage('horizontal_logo.png'),
               ),
             ),
           ),
@@ -116,7 +121,15 @@ Future<bool> _signAsGuest(bool isFirstTime) async {
               Icons.info,
               color: Colors.amber,
             ),
-            title: Text('guset_login_alert'.tr),
+            title: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'guset_login_alert'.tr,
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ),
           ),
           const Divider(height: 0),
           GFButtonBar(
@@ -145,4 +158,30 @@ Future<bool> _signAsGuest(bool isFirstTime) async {
     ),
   );
   return result ?? false;
+}
+
+class LanguageTextButton extends GetWidget<SettingsController> {
+  const LanguageTextButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final isArabic = controller.locale.languageCode == 'ar';
+    final buttonText = isArabic ? 'عربي' : 'English';
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: TextButton(
+          onPressed: () {
+            if (isArabic) {
+              controller.redioOnChanged('en');
+            } else {
+              controller.redioOnChanged('ar');
+            }
+          },
+          child: Text(buttonText),
+        ),
+      ),
+    );
+  }
 }

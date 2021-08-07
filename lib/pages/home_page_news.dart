@@ -15,7 +15,7 @@ class HomePageNews extends HookWidget {
   Widget build(BuildContext context) {
     final newsService = getIt<NewsService>();
     final searchModel = useSearchHook<News>(
-      hintText: 'search_news'.tr,
+      hintText: 'search_news_hint'.tr,
       service: newsService,
     );
     bool isSearching = searchModel.searchBar.isSearching.value;
