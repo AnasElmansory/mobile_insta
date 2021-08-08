@@ -25,7 +25,7 @@ class SourceWidget extends StatelessWidget {
     final notificatonController = Get.find<SettingsController>();
     final size = context.mediaQuerySize;
     return SizedBox(
-      height: size.height * .22,
+      height: size.height * .25,
       child: Card(
         elevation: 5,
         shape: const RoundedRectangleBorder(
@@ -36,7 +36,7 @@ class SourceWidget extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -54,6 +54,7 @@ class SourceWidget extends StatelessWidget {
                     const SizedBox(height: 8),
                     AutoSizeText(
                       source.name,
+                      maxLines: 1,
                       textDirection: source.name.adaptiveTextDirection,
                       textAlign: source.name.adaptiveTextAlign,
                     ),
@@ -71,10 +72,11 @@ class SourceWidget extends StatelessWidget {
                 height: size.height * .10,
                 child: const VerticalDivider(
                   color: Colors.black26,
+                  width: 4,
                 ),
               ),
               Expanded(
-                flex: 4,
+                flex: 7,
                 child: Column(
                   children: [
                     Expanded(
@@ -101,8 +103,8 @@ class SourceWidget extends StatelessWidget {
                       flex: 1,
                       child: Align(
                         alignment: Alignment.bottomRight,
-                        child: ButtonBar(
-                          buttonPadding: const EdgeInsets.all(4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Obx(
                               () {
@@ -132,8 +134,8 @@ class SourceWidget extends StatelessWidget {
                               },
                             ),
                             const VerticalDivider(
-                              width: 0,
-                              thickness: 1,
+                              width: 2,
+                              // thickness: 1,
                               color: Colors.black26,
                               indent: 4,
                               endIndent: 8,

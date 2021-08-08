@@ -112,7 +112,6 @@ class SourcesService extends IApiService<Source> {
           .toList();
       return sources;
     } on DioError catch (_) {
-      print(_);
       return const <Source>[];
     }
   }

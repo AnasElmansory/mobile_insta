@@ -10,7 +10,6 @@ Future<Map<int, List<T>>> getCachedItems<T>() async {
 }
 
 Future<void> setCachedItems<T>(int? pageKey, List<T> _items) async {
-  print(T.toString());
   final box = await Hive.openBox('cachedItems');
   final itemsList = box.get(T.toString());
   final items = itemsList == null ? <T>[] : List<T>.from(itemsList);

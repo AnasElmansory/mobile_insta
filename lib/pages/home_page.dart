@@ -14,16 +14,18 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<HomePageController>();
     return Scaffold(
-      body: PageView(
-        controller: controller.pageController,
-        onPageChanged: controller.toPage,
-        children: const [
-          HomePageNews(),
-          FavouriteNewsPage(),
-          SourcesPage(),
-          ProfilePage(),
-        ],
-      ),
+      body: Obx(() {
+        return PageView(
+          controller: controller.pageController,
+          onPageChanged: controller.toPage,
+          children: const [
+            HomePageNews(),
+            FavouriteNewsPage(),
+            SourcesPage(),
+            ProfilePage(),
+          ],
+        );
+      }),
       bottomNavigationBar: const HomeNavigationBar(),
     );
   }

@@ -23,16 +23,14 @@ class HomeNews extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = context.mediaQuerySize;
     final hiveBoxes = Get.find<HiveBoxes>();
-    // final notificationController = Get.find<SettingsController>();
-    // final notificationEnabled =
-    //     notificationController.isNotificationEnabled(news.users.first.id);
+
     return InkWell(
       onTap: () async {
         await hiveBoxes.saveLastReadNews(news.users.first.id, news.id);
         await navigateToOneSourcePage(news.users.first);
       },
       child: SizedBox(
-        height: size.height * .24,
+        height: size.height * 0.23,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -57,7 +55,6 @@ class HomeNews extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 1,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: Card(
@@ -69,7 +66,6 @@ class HomeNews extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Expanded(
-                          flex: 1,
                           child: Align(
                             alignment: Get.locale.adaptiveWidgetAlignment,
                             child: HomeNewsOptionsDropMenu(
@@ -100,11 +96,6 @@ class HomeNews extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            // if (notificationEnabled)
-                            //   const Icon(
-                            //     Icons.notifications_active,
-                            //     color: Colors.blue,
-                            //   ),
                             Text(news.createdAt.newsTime),
                           ],
                         ),

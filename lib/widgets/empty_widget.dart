@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:insta_news_mobile/utils/extentions.dart';
 
 class EmptyWidget extends StatelessWidget {
   const EmptyWidget({Key? key}) : super(key: key);
@@ -27,8 +26,8 @@ class EmptyWidget extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Text(
             emptyWidgetText,
-            textDirection: emptyWidgetText.adaptiveTextDirection,
-            textAlign: emptyWidgetText.adaptiveTextAlign,
+            // textDirection: emptyWidgetText.adaptiveTextDirection,
+            textAlign: TextAlign.justify,
           ),
         ),
       ],

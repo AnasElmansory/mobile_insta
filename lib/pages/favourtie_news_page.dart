@@ -25,8 +25,11 @@ class FavouriteNewsPage extends HookWidget {
       appBar: searchModel.searchBar.build(context),
       body: searching
           ? SearchBody<FavoriteNews>(notifier: searchModel.items)
-          : PaginationWidget.favourteNews(
-              apiService: favouriteService,
+          : Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: PaginationWidget.favourteNews(
+                apiService: favouriteService,
+              ),
             ),
     );
   }

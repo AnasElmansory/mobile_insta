@@ -27,13 +27,13 @@ class Languages extends StatelessWidget {
             groupValue: language.radioGroupValue,
             onChanged: (value) async => await language.redioOnChanged(value!),
           ),
-          RadioListTile<String>(
-            title: const Text("Español", style: style),
-            value: 'es',
-            dense: true,
-            groupValue: language.radioGroupValue,
-            onChanged: (value) async => await language.redioOnChanged(value!),
-          ),
+          // RadioListTile<String>(
+          //   title: const Text("Español", style: style),
+          //   value: 'es',
+          //   dense: true,
+          //   groupValue: language.radioGroupValue,
+          //   onChanged: (value) async => await language.redioOnChanged(value!),
+          // ),
         ],
       ),
     );

@@ -25,10 +25,6 @@ Future<void> navigateToSignPageUntil() async {
   await Get.to(() => const SignPage());
 }
 
-// Future<void> navigateToCountryPage() async {
-//   await Get.off(() => const PickCountryPage());
-// }
-
 Future<void> navigateToSettingsPage() async {
   await Get.to(() => const SettingsPage());
 }

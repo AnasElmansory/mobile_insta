@@ -45,7 +45,7 @@ class AuthButton extends StatelessWidget {
           if (userSignOut) {
             await controller.signOut();
           } else {
-            await navigateToSignPageUntil();
+            await navigateToSignPage();
           }
         } else {
           return;

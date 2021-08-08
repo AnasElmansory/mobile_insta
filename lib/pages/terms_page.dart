@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:insta_news_mobile/utils/navigations.dart';
+import 'package:insta_news_mobile/utils/extentions.dart';
 
 class TermsPage extends StatelessWidget {
   final bool _showFabButtton;
@@ -18,8 +19,11 @@ class TermsPage extends StatelessWidget {
     return Scaffold(
       floatingActionButton: _showFabButtton
           ? FloatingActionButton(
-              child: Text('accept'.tr),
-              onPressed: navigateToSignPage,
+              child: Text(
+                'accept'.tr,
+                textDirection: 'accept'.tr.adaptiveTextDirection,
+              ),
+              onPressed: () async => await navigateToSignPage(),
             )
           : null,
       appBar: AppBar(
@@ -35,6 +39,7 @@ class TermsPage extends StatelessWidget {
               child: Column(
                 children: [
                   Html(data: snapshot.data),
+                  if (_showFabButtton) const SizedBox(height: kToolbarHeight)
                 ],
               ),
             );

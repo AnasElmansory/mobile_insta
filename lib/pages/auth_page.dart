@@ -41,8 +41,9 @@ void authCheck(BuildContext context) {
       final controller = Get.find<HomePageController>();
       controller.currnetPage = 2;
       controller.pageController = PageController(initialPage: 2);
-      await navigateToSignPage();
+      await navigateToTermsPage(firstTime: true);
+    } else {
+      await navigateToHomePage();
     }
-    await navigateToHomePage();
   });
 }

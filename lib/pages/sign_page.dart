@@ -3,10 +3,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:insta_news_mobile/controllers/auth_controller.dart';
+import 'package:insta_news_mobile/controllers/settings/home_page_controller.dart';
 import 'package:insta_news_mobile/controllers/settings/settings_controller.dart';
 import 'package:insta_news_mobile/utils/helper.dart';
 import 'package:insta_news_mobile/utils/navigations.dart';
 
+//? facebook hash 2eAEjoB6zkAj8RTwgCO1vxt92M4=
 class SignPage extends GetWidget<AuthController> {
   final bool isFirstTime;
   const SignPage({Key? key})
@@ -18,10 +20,12 @@ class SignPage extends GetWidget<AuthController> {
   @override
   Widget build(BuildContext context) {
     final size = context.mediaQuerySize;
+    final padding = context.mediaQueryPadding;
+
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: size.height * .1),
+          SizedBox(height: padding.top + kToolbarHeight),
           const LanguageTextButton(),
           SizedBox(
             height: size.height * .2,
@@ -89,7 +93,7 @@ class SignPage extends GetWidget<AuthController> {
             type: GFButtonType.transparent,
             textColor: Colors.black,
             onPressed: () async {
-              final result = await _signAsGuest(isFirstTime);
+              final result = await _signAsGuest(isFirstTime, context);
               if (result) _onAuthCompleted(isFirstTime);
             },
           ),
@@ -100,60 +104,71 @@ class SignPage extends GetWidget<AuthController> {
 }
 
 void _onAuthCompleted(bool isFirstTime) {
+  final controller = Get.find<HomePageController>();
+  controller.currnetPage = 2;
+  controller.pageController = PageController(initialPage: 2);
   if (isFirstTime) {
     navigateToHomePage();
   } else {
-    Get.back();
+    navigateToHomePage();
   }
 }
 
-Future<bool> _signAsGuest(bool isFirstTime) async {
+Future<bool> _signAsGuest(bool isFirstTime, BuildContext context) async {
   if (!await makeSureConnected()) return false;
+  final size = context.mediaQuerySize;
   final result = await Get.dialog<bool>(
-    Dialog(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          GFListTile(
-            padding: const EdgeInsets.all(8),
-            margin: const EdgeInsets.all(0),
-            avatar: const Icon(
-              Icons.info,
-              color: Colors.amber,
-            ),
-            title: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'guset_login_alert'.tr,
-                style: const TextStyle(
-                  fontSize: 16,
+    SizedBox(
+      width: size.width * .7,
+      child: Dialog(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GFListTile(
+              padding: const EdgeInsets.all(8),
+              margin: const EdgeInsets.all(0),
+              avatar: const Icon(
+                Icons.info,
+                color: Colors.amber,
+              ),
+              title: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'guset_login_alert'.tr,
+                  textAlign: TextAlign.justify,
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),
-          ),
-          const Divider(height: 0),
-          GFButtonBar(
-            children: [
-              GFButton(
-                text: 'cancel'.tr,
-                color: Colors.white,
-                type: GFButtonType.outline,
-                textColor: Colors.black,
-                onPressed: () => Get.back(result: false),
+            const Divider(height: 0),
+            SizedBox(
+              height: 50,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      child: Text('cancel'.tr),
+                      onPressed: () => Get.back(result: false),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                    child: VerticalDivider(width: 0),
+                  ),
+                  Expanded(
+                    child: TextButton(
+                      child: Text('continue'.tr),
+                      onPressed: () => Get.back(result: true),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(
-                height: 40,
-                child: VerticalDivider(),
-              ),
-              GFButton(
-                text: 'continue'.tr,
-                color: Colors.white,
-                textColor: Colors.blue,
-                onPressed: () => Get.back(result: true),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     ),
   );

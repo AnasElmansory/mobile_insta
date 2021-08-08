@@ -109,9 +109,11 @@ class SettingsController extends GetxController {
       _locale.value = const Locale('en', 'US');
     } else if (result == 'ar') {
       _locale.value = const Locale('ar', 'EG');
-    } else if (result == 'es') {
-      _locale.value = const Locale('es', 'MX');
-    } else {
+    }
+    // else if (result == 'es') {
+    //   _locale.value = const Locale('es', 'MX');
+    // }
+    else {
       _locale.value = Get.deviceLocale ?? locale;
     }
     Get.updateLocale(locale);
@@ -124,7 +126,8 @@ class SettingsController extends GetxController {
       _locale.value = const Locale('en', 'US');
     } else if (value == 'ar') {
       _locale.value = const Locale('ar', 'EG');
-    } else if (value == 'es') _locale.value = const Locale('es', 'MX');
+    }
+    // else if (value == 'es') _locale.value = const Locale('es', 'MX');
     _saveLocale();
     Get.updateLocale(locale);
   }

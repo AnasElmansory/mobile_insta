@@ -1,9 +1,10 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomePageController extends GetxController {
   final Rx<PageController> _pageController = PageController().obs;
   final RxInt _currnetPage = 0.obs;
+
   PageController get pageController => _pageController.value;
   set pageController(PageController value) => _pageController.value = value;
   int get currnetPage => _currnetPage.value;

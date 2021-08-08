@@ -60,9 +60,6 @@ class GoogleAuth extends IAuth {
       permission: 'none',
     );
     final admin = await _adminVerification.getVerifiedAdmin(user);
-    if (admin == null) {
-      await Fluttertoast.showToast(msg: 'you don\'t have admin permission');
-    }
 
     return user.copyWith(permission: admin?.permission);
   }

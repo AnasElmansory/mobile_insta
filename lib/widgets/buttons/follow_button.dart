@@ -23,16 +23,19 @@ class FollowButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      child: AutoSizeText(
-        text.tr,
-        minFontSize: 12,
-        maxFontSize: Get.locale!.languageCode == 'es' ? 12 : 14,
-        maxLines: 1,
-        style: TextStyle(color: color),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: TextButton(
+        child: AutoSizeText(
+          text.tr,
+          minFontSize: 12,
+          maxFontSize: Get.locale!.languageCode == 'es' ? 12 : 14,
+          maxLines: 1,
+          style: TextStyle(color: color),
+        ),
+        onPressed: onPressed,
+        style: const ButtonStyle(),
       ),
-      onPressed: onPressed,
-      style: const ButtonStyle(),
     );
   }
 }
