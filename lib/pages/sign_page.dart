@@ -6,6 +6,7 @@ import 'package:insta_news_mobile/controllers/auth_controller.dart';
 import 'package:insta_news_mobile/controllers/settings/home_page_controller.dart';
 import 'package:insta_news_mobile/controllers/settings/settings_controller.dart';
 import 'package:insta_news_mobile/utils/helper.dart';
+import 'package:insta_news_mobile/utils/extentions.dart';
 import 'package:insta_news_mobile/utils/navigations.dart';
 
 //? facebook hash 2eAEjoB6zkAj8RTwgCO1vxt92M4=
@@ -42,7 +43,7 @@ class SignPage extends GetWidget<AuthController> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: GFButton(
-              elevation: 5,
+              elevation: 10,
               icon: const Icon(
                 FontAwesomeIcons.facebookF,
                 color: Colors.white,
@@ -117,6 +118,7 @@ void _onAuthCompleted(bool isFirstTime) {
 Future<bool> _signAsGuest(bool isFirstTime, BuildContext context) async {
   if (!await makeSureConnected()) return false;
   final size = context.mediaQuerySize;
+  final guestAlert = 'guset_login_alert'.tr;
   final result = await Get.dialog<bool>(
     SizedBox(
       width: size.width * .7,
@@ -134,8 +136,8 @@ Future<bool> _signAsGuest(bool isFirstTime, BuildContext context) async {
               title: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  'guset_login_alert'.tr,
-                  textAlign: TextAlign.justify,
+                  guestAlert,
+                  textAlign: guestAlert.adaptiveTextAlign,
                   style: const TextStyle(
                     fontSize: 16,
                   ),
@@ -181,7 +183,7 @@ class LanguageTextButton extends GetWidget<SettingsController> {
   @override
   Widget build(BuildContext context) {
     final isArabic = controller.locale.languageCode == 'ar';
-    final buttonText = isArabic ? 'عربي' : 'English';
+    final buttonText = isArabic ? 'English' : 'عربي';
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Align(

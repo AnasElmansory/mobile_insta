@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:hive/hive.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:insta_news_mobile/hooks/ads_hook.dart';
 import 'package:lottie/lottie.dart';
 
 import 'package:insta_news_mobile/api/news_service.dart';
@@ -129,17 +130,25 @@ class SourceNewsList extends StatelessWidget {
                   firstPageProgressIndicatorBuilder: (_) =>
                       Lottie.asset('assets/newspaper_spinner.json'),
                   itemBuilder: (context, news, index) {
-                    if (pagingController.itemList?.last != news) {
-                      return NewsWidgets.fromRegular(news: news);
-                    } else {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          NewsWidgets.fromRegular(news: news),
-                          const SizedBox(height: 58),
-                        ],
-                      );
-                    }
+                    final isAdIndex = index != 0 && index % 3 == 0;
+                    final lastNews = pagingController.itemList?.last == news;
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (!lastNews)
+                          NewsWidgets.fromRegular(news: news)
+                        else
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              NewsWidgets.fromRegular(news: news),
+                              const SizedBox(height: 58),
+                            ],
+                          ),
+                        if (isAdIndex && !lastNews)
+                          const NativeAdContainer.medium(),
+                      ],
+                    );
                   },
                 ),
               ),
@@ -166,79 +175,87 @@ class SourceActionButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     final notificationController = Get.find<SettingsController>();
     final sourceFollow = Get.find<SourceFollowController>();
-    return ButtonBar(
-      buttonPadding: const EdgeInsets.all(8),
-      alignment: MainAxisAlignment.spaceEvenly,
+    return Row(
       children: [
-        Obx(
-          () {
-            if (notificationController.isNotificationEnabled(sourceId)) {
-              return GFButton(
-                text: 'mute_notification'.tr,
-                borderShape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-                color: Colors.red,
-                onPressed: () async {
-                  if (await makeSureConnected()) {
-                    await notificationController.unsubscribeFromTopic(sourceId);
-                  } else {
-                    return;
-                  }
-                },
-              );
-            } else {
-              return GFButton(
-                text: 'enable_notification'.tr,
-                borderShape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-                color: Colors.blue,
-                onPressed: () async {
-                  if (await makeSureConnected()) {
-                    await notificationController.subscribeToTopic(sourceId);
-                  } else {
-                    return;
-                  }
-                },
-              );
-            }
-          },
-        ),
-        Obx(
-          () {
-            if (!sourceFollow.isFollowing(sourceId)) {
-              return GFButton(
-                text: 'follow'.tr,
-                borderShape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-                color: Colors.blue,
-                onPressed: () async {
-                  if (await makeSureConnected()) {
-                    await sourceFollow.manageFollowSource(sourceId);
-                  } else {
-                    return;
-                  }
-                },
-              );
-            } else {
-              return GFButton(
-                  text: 'unfollow'.tr,
+        const SizedBox(width: 16),
+        Expanded(
+          flex: 1,
+          child: Obx(
+            () {
+              if (notificationController.isNotificationEnabled(sourceId)) {
+                return GFButton(
+                  text: 'mute_notification'.tr,
                   borderShape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
                   color: Colors.red,
                   onPressed: () async {
                     if (await makeSureConnected()) {
+                      await notificationController
+                          .unsubscribeFromTopic(sourceId);
+                    } else {
+                      return;
+                    }
+                  },
+                );
+              } else {
+                return GFButton(
+                  text: 'enable_notification'.tr,
+                  borderShape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                  color: Colors.blue,
+                  onPressed: () async {
+                    if (await makeSureConnected()) {
+                      await notificationController.subscribeToTopic(sourceId);
+                    } else {
+                      return;
+                    }
+                  },
+                );
+              }
+            },
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          flex: 1,
+          child: Obx(
+            () {
+              if (!sourceFollow.isFollowing(sourceId)) {
+                return GFButton(
+                  text: 'follow'.tr,
+                  borderShape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                  color: Colors.blue,
+                  onPressed: () async {
+                    if (await makeSureConnected()) {
                       await sourceFollow.manageFollowSource(sourceId);
                     } else {
                       return;
                     }
-                  });
-            }
-          },
+                  },
+                );
+              } else {
+                return GFButton(
+                    text: 'unfollow'.tr,
+                    borderShape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    color: Colors.red,
+                    onPressed: () async {
+                      if (await makeSureConnected()) {
+                        await sourceFollow.manageFollowSource(sourceId);
+                      } else {
+                        return;
+                      }
+                    });
+              }
+            },
+          ),
         ),
+        const SizedBox(width: 16),
       ],
     );
   }

@@ -81,9 +81,11 @@ class _NewsWidget extends NewsWidgets {
           Padding(
             padding: const EdgeInsets.only(left: 8, top: 8, right: 2),
             child: GFAvatar(
-              backgroundImage: CachedNetworkImageProvider(
-                news.users.first.profileImageMedium,
-              ),
+              backgroundImage: 
+              AssetImage('user_placeholder.png'),
+              // CachedNetworkImageProvider(
+              //   news.users.first.profileImageMedium,
+              // ),
               radius: 15,
             ),
           ),
@@ -220,9 +222,7 @@ class _MediaImageState extends State<_MediaImage>
   Widget build(BuildContext context) {
     super.build(context);
     return ClipRRect(
-      borderRadius: const BorderRadius.all(
-        Radius.circular(10),
-      ),
+      borderRadius: BorderRadius.circular(10),
       child: Hero(
         tag: widget.image,
         child: CachedNetworkImage(

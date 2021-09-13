@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:insta_news_mobile/models/country.dart';
+import 'package:insta_news_mobile/models/news.dart';
 import 'package:insta_news_mobile/models/source.dart';
 import 'package:insta_news_mobile/models/twitter_models/media.dart';
 import 'package:insta_news_mobile/models/user.dart';
@@ -8,7 +9,7 @@ import 'package:intl/intl.dart' as intl;
 
 extension MediaTypeX on MediaType? {
   String? typeToString() {
-    if (this == MediaType.video) {
+    if (runtimeType == MediaType.video) {
       return 'video';
     } else if (this == MediaType.photo) {
       return 'photo';

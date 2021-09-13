@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:insta_news_mobile/hooks/ads_hook.dart';
 import 'package:lottie/lottie.dart';
 
 import 'package:insta_news_mobile/api/i_api_service.dart';
@@ -10,13 +11,14 @@ import 'package:insta_news_mobile/models/news.dart';
 import 'package:insta_news_mobile/models/source.dart';
 import 'package:insta_news_mobile/utils/caching.dart';
 import 'package:insta_news_mobile/utils/helper.dart';
+import 'package:insta_news_mobile/utils/extentions.dart';
 import 'package:insta_news_mobile/widgets/country_tile.dart';
 import 'package:insta_news_mobile/widgets/empty_widget.dart';
 import 'package:insta_news_mobile/widgets/news/home_news.dart';
 import 'package:insta_news_mobile/widgets/news/news_widget.dart';
 import 'package:insta_news_mobile/widgets/source_widget.dart';
 
-class PaginationWidget<T> extends StatefulWidget {
+class PaginationWidget<T extends Object> extends StatefulWidget {
   final IApiService<T> apiService;
   final Widget divider;
   final bool isFavorite;
@@ -66,8 +68,8 @@ class PaginationWidget<T> extends StatefulWidget {
   _PaginationWidgetState<T> createState() => _PaginationWidgetState<T>();
 }
 
-class _PaginationWidgetState<T> extends State<PaginationWidget<T>>
-    with AutomaticKeepAliveClientMixin {
+class _PaginationWidgetState<T extends Object>
+    extends State<PaginationWidget<T>> with AutomaticKeepAliveClientMixin {
   late PagingController<int, T>? _pagingController;
   @override
   void initState() {
@@ -132,9 +134,20 @@ class _PaginationWidgetState<T> extends State<PaginationWidget<T>>
               noItemsFoundIndicatorBuilder: (_) => const EmptyWidget(),
               firstPageProgressIndicatorBuilder: (_) =>
                   Lottie.asset('assets/newspaper_spinner.json'),
-              itemBuilder: (context, item, index) => widget.isHomeNews
-                  ? HomeNews(news: item as News)
-                  : _pagedWidget<T>(item),
+              itemBuilder: (context, item, index) {
+                final isAdIndex = index != 0 && index % 3 == 0;
+
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    widget.isHomeNews
+                        ? HomeNews(news: item as News)
+                        : _pagedWidget<T>(item),
+                    if (isAdIndex) const Divider(),
+                    if (isAdIndex) AdWrapper<T>()
+                  ],
+                );
+              },
             ),
           );
     return RefreshIndicator(
@@ -160,5 +173,25 @@ Widget _pagedWidget<T>(T item) {
     return NewsWidgets.fromRegular(news: item);
   } else {
     return const Text('pagination error!');
+  }
+}
+
+class AdWrapper<T extends Object> extends StatelessWidget {
+  const AdWrapper({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final size = context.mediaQuerySize;
+
+    if (T == FavoriteNews) {
+      return const NativeAdContainer.medium();
+    } else if (T == News) {
+      return const NativeAdContainer();
+    } else if (T == Source) {
+      return NativeAdContainer(
+        height: size.height * 0.23,
+      );
+    } else {
+      return const NativeAdContainer();
+    }
   }
 }

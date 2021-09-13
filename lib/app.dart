@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:insta_news_mobile/controllers/auth_controller.dart';
 import 'package:insta_news_mobile/controllers/news/news_favourite_controller.dart';
+import 'package:insta_news_mobile/hooks/ads_hook.dart';
 import 'package:insta_news_mobile/pages/auth_page.dart';
 import 'package:insta_news_mobile/utils/translations.dart';
 
@@ -17,9 +18,11 @@ class App extends StatelessWidget {
     Get.put(NewsFavouriteController());
     Get.put(SourceFollowController());
     Get.put(AuthController());
+    Get.put(InterAd());
     Get.put(HomePageController());
-
     return GetMaterialApp(
+      color: Colors.blue[800],
+      title: 'INSTA News',
       translations: InstaTranslation(),
       locale: settings.locale,
       fallbackLocale: const Locale('en', 'US'),

@@ -38,20 +38,22 @@ class HomeNews extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Obx(
                 () => GFAvatar(
-                  child: hiveBoxes.isNewsUnread(news.users.first.id, news.id)
-                      ? const Align(
-                          alignment: Alignment.topRight,
-                          child: GFBadge(
-                            shape: GFBadgeShape.circle,
-                            border: BorderSide(color: Colors.white, width: .5),
-                            size: 25,
-                          ),
-                        )
-                      : null,
-                  backgroundImage: CachedNetworkImageProvider(
-                    news.users.first.profileImageMedium,
-                  ),
-                ),
+                    child: hiveBoxes.isNewsUnread(news.users.first.id, news.id)
+                        ? const Align(
+                            alignment: Alignment.topRight,
+                            child: GFBadge(
+                              shape: GFBadgeShape.circle,
+                              border:
+                                  BorderSide(color: Colors.white, width: .5),
+                              size: 25,
+                            ),
+                          )
+                        : null,
+                    backgroundImage: AssetImage('user_placeholder.png')
+                    // CachedNetworkImageProvider(
+                    //   news.users.first.profileImageMedium,
+                    // ),
+                    ),
               ),
             ),
             Expanded(

@@ -37,35 +37,39 @@ class SourceWidget extends StatelessWidget {
             children: [
               Expanded(
                 flex: 3,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    CircularProfileAvatar(
-                      source.profileImageMedium,
-                      radius: 30,
-                      borderWidth: 0.5,
-                      borderColor: Colors.blue[800]!,
-                      placeHolder: (_, __) =>
-                          Image.asset('user_placeholder.png'),
-                      errorWidget: (_, __, ___) =>
-                          Image.asset('user_placeholder.png'),
-                    ),
-                    const SizedBox(height: 8),
-                    AutoSizeText(
-                      source.name,
-                      maxLines: 1,
-                      textDirection: source.name.adaptiveTextDirection,
-                      textAlign: source.name.adaptiveTextAlign,
-                    ),
-                    AutoSizeText(
-                      '@' + source.username,
-                      maxLines: 1,
-                      textDirection: source.username.adaptiveTextDirection,
-                      textAlign: source.username.adaptiveTextAlign,
-                      style: const TextStyle(color: Colors.blue),
-                    ),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      //TODO: edit link in next version
+                      CircularProfileAvatar(
+                        "source.profileImageMedium",
+                        radius: 30,
+                        borderWidth: 0.5,
+                        borderColor: Colors.blue[800]!,
+                        placeHolder: (_, __) =>
+                            Image.asset('user_placeholder.png'),
+                        errorWidget: (_, __, ___) =>
+                            Image.asset('user_placeholder.png'),
+                      ),
+                      const SizedBox(height: 8),
+                      AutoSizeText(
+                        source.name,
+                        maxLines: 1,
+                        textDirection: source.name.adaptiveTextDirection,
+                        textAlign: source.name.adaptiveTextAlign,
+                      ),
+                      AutoSizeText(
+                        '@' + source.username,
+                        maxLines: 1,
+                        textDirection: source.username.adaptiveTextDirection,
+                        textAlign: source.username.adaptiveTextAlign,
+                        style: const TextStyle(color: Colors.blue),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               SizedBox(

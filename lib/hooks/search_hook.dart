@@ -43,11 +43,14 @@ class _SearchBarState<T> extends HookState<SearchModel<T>, _Search<T>> {
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
-      title: const Text(
-        'INSTA News',
-        style: TextStyle(
-          fontSize: 25,
-          fontWeight: FontWeight.bold,
+      title: const Padding(
+        padding: EdgeInsets.only(top: 8.0),
+        child: Text(
+          'INSTA News',
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       actions: [
